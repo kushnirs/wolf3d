@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/15 15:12:40 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/15 15:18:10 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	ft_handler(t_sdl *data, t_map *map, t_player *player, t_point *pl)
 	const t_point	p_p = player->pos;
 	const t_point	p_d = player->dir;
 
+	printf("%f ", player->pos.x);
 	if (data->event.type == SDL_KEYDOWN)
 	{
 		if (data->event.key.keysym.sym == SDLK_UP)

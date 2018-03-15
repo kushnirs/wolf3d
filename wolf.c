@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 09:09:57 by skushnir          #+#    #+#             */
-/*   Updated: 2018/03/15 15:12:48 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/15 15:19:12 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,20 +101,6 @@
 // 	}
 // 	return (0);
 // }
-// static void	sgl_vsync(void)
-// {
-// 	int				delay;
-// 	static t_ui		t_b;
-// 	static char		v_sync = 1;
-
-// 	v_sync == 1 ? v_sync = SDL_GL_SetSwapInterval(1) : 0;
-// 	if (v_sync)
-// 	{
-// 		delay = 17 - (SDL_GetTicks() - t_b);
-// 		SDL_Delay(delay < 0 ? 0 : delay);
-// 		t_b = SDL_GetTicks();
-// 	}
-// }
 
 int			main(int ac, char **av)
 {
@@ -145,13 +131,12 @@ int			main(int ac, char **av)
 	while (1)
 	{
 		ft_bzero(data.surface->pixels, data.surface->w * data.surface->h * 4);
-		// raycast(&data,data.map.map, data.player, data.plane);
-		kernel_param(&data);
+		raycast(&data,data.map.map, data.player, data.plane);
+		// kernel_param(&data);
 		fps(&data);
 		while (SDL_PollEvent(&data.event))
 			!ft_handler(&data, &data.map, &data.player, &data.plane) ? exit(0) : 0;
 		SDL_UpdateWindowSurface(data.win);
-		// sgl_vsync();
 	}
 	return (0);
 }
