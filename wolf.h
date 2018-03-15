@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/14 21:14:08 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/15 15:11:53 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ typedef struct			s_sdl
 {
 	SDL_Window			*win;
 	SDL_Surface			*surface;
+	SDL_Surface			*fps;
 	SDL_Event			event;
-	int					*pixel;
 	t_host				host;
 	t_player			player;
 	t_map				map;
@@ -81,7 +81,7 @@ int					raycast(t_sdl *data, int *worldmap, t_player player, t_point plane);
 void				read_coordinate(int fd, char *av, t_map *map);
 void				fps(t_sdl *data);
 int					ft_handler(t_sdl *data, t_map *map, t_player *player, t_point *plane);
-int					host_fract(char *filename, char *funcname, t_sdl *data);
+int					host_fract(t_sdl *data);
 void				kernel_param(t_sdl *data);
 
 #endif

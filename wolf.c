@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 09:09:57 by skushnir          #+#    #+#             */
-/*   Updated: 2018/03/14 21:37:01 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/15 15:12:48 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 // static void	draw(int x, int start, int end, int color, t_sdl *data)
 // {
+// 	int *lox;
+// 	lox = (int*)data->surface->pixels;
 // 	while (start++ < end)
-// 		data->pixel[x + start * WIDTH] = color;
+// 		lox[x + start * WIDTH] = color;
 // }
 
 // int raycast(t_sdl *data, int *worldmap, t_player player, t_point plane)
@@ -99,43 +101,57 @@
 // 	}
 // 	return (0);
 // }
+// static void	sgl_vsync(void)
+// {
+// 	int				delay;
+// 	static t_ui		t_b;
+// 	static char		v_sync = 1;
+
+// 	v_sync == 1 ? v_sync = SDL_GL_SetSwapInterval(1) : 0;
+// 	if (v_sync)
+// 	{
+// 		delay = 17 - (SDL_GetTicks() - t_b);
+// 		SDL_Delay(delay < 0 ? 0 : delay);
+// 		t_b = SDL_GetTicks();
+// 	}
+// }
 
 int			main(int ac, char **av)
 {
 	int		fd;
 	t_sdl	data;
 
-	// data = (t_sdl){.player = {(t_point){22, 12}, (t_point){-1, 0}}, .plane = {0, 0.66},
-	// 		.map = (t_map){.row = 0, .col = 0}};
-	// ac != 2 ?
-	// 	exit(write(1, "Usage : ./wolf3d <filename>\n", 28)) : 0;
-	// if ((fd = open(av[1], O_RDONLY)) == -1)
-	// 	exit(ft_printf("No file %s\n", av[1]));
-	// read_coordinate(fd, av[1], &data.map);
-	// SDL_Init(SDL_INIT_VIDEO);
-	// TTF_Init();
-	// data.win = SDL_CreateWindow("Wolf3D", SDL_WINDOWPOS_CENTERED,
-	// 	SDL_WINDOWPOS_CENTERED, WIDTH, HIGH, 0);
-	// !data.win ? exit(ft_printf("Window error: %s\n", SDL_GetError())) : 0;
-	// data.surface = SDL_GetWindowSurface(data.win);
-	// !data.surface ? exit(ft_printf("Surface error: %s\n", SDL_GetError())) : 0;
-	// data.pixel = (int*)data.surface->pixels;
+	data = (t_sdl){.player = {{22, 12}, {-1, 0}}, .plane = {0, 0.66},
+			.map = {.row = 0, .col = 0}};
+	ac != 2 ?
+		exit(write(1, "Usage : ./wolf3d <filename>\n", 28)) : 0;
+	if ((fd = open(av[1], O_RDONLY)) == -1)
+		exit(ft_printf("No file %s\n", av[1]));
+	read_coordinate(fd, av[1], &data.map);
+	SDL_Init(SDL_INIT_VIDEO);
+	TTF_Init();
+	data.win = SDL_CreateWindow("Wolf3D", SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED, WIDTH, HIGH, 0);
+	!data.win ? exit(ft_printf("Window error: %s\n", SDL_GetError())) : 0;
+	data.surface = SDL_GetWindowSurface(data.win);
+	!data.surface ? exit(ft_printf("Surface error: %s\n", SDL_GetError())) : 0;
 	// for(int i = 0; i < 24 * 24; i++)
 	// {
 	// 	if (!(i % 24))
 	// 		printf("\n");
 	// 	printf("%d ", data.map.map[i]);
 	// }
-	host_fract("./kernel/wolf.cl", "raycast", &data);
-	// while (1)
-	// {
-	// 	ft_bzero(data.surface->pixels, data.surface->w * data.surface->h * 4);
-	// 	raycast(&data,data.map.map, data.player, data.plane);
-	// 	// kernel_param(&data);
-	// 	fps(&data);
-	// 	while (SDL_PollEvent(&data.event))
-	// 		!ft_handler(&data, &data.map, &data.player, &data.plane) ? exit(0) : 0;
-	// 	SDL_UpdateWindowSurface(data.win);
-	// }
+	host_fract(&data);
+	while (1)
+	{
+		ft_bzero(data.surface->pixels, data.surface->w * data.surface->h * 4);
+		// raycast(&data,data.map.map, data.player, data.plane);
+		kernel_param(&data);
+		fps(&data);
+		while (SDL_PollEvent(&data.event))
+			!ft_handler(&data, &data.map, &data.player, &data.plane) ? exit(0) : 0;
+		SDL_UpdateWindowSurface(data.win);
+		// sgl_vsync();
+	}
 	return (0);
 }

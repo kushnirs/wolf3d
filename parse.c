@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 15:13:38 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/14 19:41:51 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/15 11:24:19 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void		read_coordinate(int fd, char *av, t_map *map)
 	}
 	close(fd);
 	!map->row ? exit(ft_printf("No data found\n")) : close(fd);
-	map->map = (int *)ft_memalloc(sizeof(int) * map->row * map->row);
+	map->map = (int*)ft_memalloc(sizeof(int) * map->row * map->row);
 	(fd = open(av, O_RDONLY)) == -1 ? exit(ft_printf("No file %s\n", av)) : 0;
 	coord = NULL;
 	while (get_next_line(fd, &line) > 0)

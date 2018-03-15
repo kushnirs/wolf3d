@@ -6,7 +6,7 @@
 #    By: sergee <sergee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 11:17:10 by skushnir          #+#    #+#              #
-#    Updated: 2018/03/14 21:16:44 by sergee           ###   ########.fr        #
+#    Updated: 2018/03/15 13:27:32 by sergee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,10 +14,9 @@ NAME		= wolf3d
 
 CC			= gcc
 
-CFLAGS		=
-# -Wall -Wextra -Werror -O3
+CFLAGS		= -Wall -Wextra -Werror -O3
 
-SRC			= wolf.c parse.c opencl.c utility.c
+SRC			= wolf.c parse.c host.c utility.c
 
 HDR			= wolf.h
 
