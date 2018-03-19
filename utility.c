@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/19 13:48:20 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/19 17:30:47 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ void	vsync(void)
 	static t_ui	fps;
 
 	fps = SDL_GetTicks() - prev;
-	if (17 > fps)
-		SDL_Delay(17 - fps);
+	prev = SDL_GetTicks();
+	if (16 > fps)
+		SDL_Delay(16 - fps);
 }
 
 void	fps(t_sdl *data)

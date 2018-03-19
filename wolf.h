@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/19 14:04:04 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/20 00:12:38 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # define MAP_H 24
 # define WIDTH 1280
 # define HIGH 1024
+# define T_W 512
+# define T_H 512
 
 typedef	struct			s_host
 {
@@ -69,15 +71,20 @@ typedef struct			s_map
 	int					*map;
 }						t_map;
 
+typedef struct			s_wall
+{
+	t_ui				w[T_W * T_H];
+}						t_wall;
+
 typedef struct			s_sdl
 {
 	SDL_Window			*win;
 	SDL_Surface			*surface;
 	SDL_Surface			*fps;
-	SDL_Surface			*w[5];
+	SDL_Surface			*w[7];
 	SDL_Event			event;
 	t_host				host;
-	int					*wall[5];
+	t_wall				*wall;
 	t_player			player;
 	t_map				map;
 	t_point				plane;

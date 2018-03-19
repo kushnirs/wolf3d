@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 10:14:49 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/19 14:06:42 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/19 16:42:42 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void		kernel_param(t_sdl *data)
 	ret ? exit(ft_printf("clEnqueueNDRangeKernel Failed\n")) : 0;
 	ret = clEnqueueReadBuffer(data->host.com_queue, data->host.memobj, CL_TRUE,
 		0, data->surface->w * data->surface->h * sizeof(int),
-		(int*)data->surface->pixels, 0, NULL, NULL);
+		(t_ui*)data->surface->pixels, 0, NULL, NULL);
 	ret ? exit(ft_printf("clEnqueueReadBuffer Failed\n")) : 0;
 }
 
@@ -53,7 +53,7 @@ static void	host_program(char *str, int size, t_sdl *data)
 	data->host.map = clCreateBuffer(data->host.context, CL_MEM_USE_HOST_PTR,
 		data->map.row * data->map.col * sizeof(int), data->map.map, &ret);
 	data->host.wall = clCreateBuffer(data->host.context, CL_MEM_USE_HOST_PTR,
-		64 * 64 * 5 * sizeof(int), data->wall, &ret);
+		5 * sizeof(t_wall), data->wall, &ret);
 	ret ? exit(ft_printf("clCreateMap Failed\n")) : 0;
 	data->host.program = clCreateProgramWithSource(data->host.context, 1,
 		(const char **)&str, (const size_t *)&size, &ret);
