@@ -6,22 +6,44 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/15 15:18:10 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/19 13:48:20 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf.h"
 
+static int	close_sdl(t_sdl *data)
+{
+	SDL_DestroyWindow(data->win);
+	SDL_Quit();
+	return (0);
+}
+
+void	vsync(void)
+{
+	static t_ui	prev;
+	static t_ui	fps;
+
+	fps = SDL_GetTicks() - prev;
+	if (17 > fps)
+		SDL_Delay(17 - fps);
+}
+
 void	fps(t_sdl *data)
 {
 	static t_ui	prev;
 	static t_ui	fps;
+	static t_ui	t_p;
+	t_ui		t;
 	TTF_Font	*ttf;
 	char		*fps_str;
 
-	fps = 1000 / (SDL_GetTicks() - prev);
+	t = time(NULL);
+	if (t - t_p)
+		fps = (SDL_GetTicks() - prev);
+	t_p = t;
 	prev = SDL_GetTicks();
-	fps_str = ft_itoa(fps);
+	fps_str = ft_itoa(1000 / fps);
 	data->fps = NULL;
 	ttf = TTF_OpenFont("ARIAL.TTF", 22);
 	data->fps = TTF_RenderText_Solid(ttf, fps_str,
@@ -32,52 +54,54 @@ void	fps(t_sdl *data)
 	ft_memdel((void**)&fps_str);
 }
 
-int	ft_handler(t_sdl *data, t_map *map, t_player *player, t_point *pl)
+void move(t_map *map, t_player *p, t_point *pl)
 {
-	const t_point	p_p = player->pos;
-	const t_point	p_d = player->dir;
+	const t_point	old_pl = {pl->x, pl->y};
+	const t_point	old_dir = {p->dir.x, p->dir.y};
 
-	printf("%f ", player->pos.x);
+	if (p->move)
+	{
+		!map->map[(int)(p->pos.x + p->dir.x * p->m_s * p->move) + 
+			(int)p->pos.y * map->row] ? p->pos.x +=
+				p->dir.x * p->m_s * p->move : 0;
+		!map->map[(int)p->pos.x + (int)(p->pos.y + p->dir.y * p->m_s * p->move)
+			* map->row] ? p->pos.y +=
+				p->dir.y * p->m_s * p->move : 0;
+	}
+	if (p->rot)
+	{
+		p->dir.x = p->dir.x * cos(p->r_s * p->rot) -
+				p->dir.y * sin(p->r_s * p->rot);
+		p->dir.y = old_dir.x * sin(p->r_s * p->rot) +
+				p->dir.y * cos(p->r_s * p->rot);
+		pl->x = pl->x * cos(p->r_s * p->rot) - pl->y * sin(p->r_s * p->rot);
+		pl->y = old_pl.x * sin(p->r_s * p->rot) + pl->y * cos(p->r_s * p->rot);
+	}
+}
+
+int	ft_handler(t_sdl *data)
+{
 	if (data->event.type == SDL_KEYDOWN)
 	{
 		if (data->event.key.keysym.sym == SDLK_UP)
-		{
-			!map->map[(int)(p_p.x + p_d.x * data->move) + (int)(p_p.y) * data->map.row] ?
-				player->pos.x += p_d.x * data->move: 0;
-			!map->map[(int)p_p.x + (int)(p_p.y + p_d.y * data->move) * data->map.row] ?
-				player->pos.y += p_d.y * data->move : 0;
-		}
+			data->player.move = 1;
 		else if (data->event.key.keysym.sym == SDLK_DOWN)
-		{
-			!map->map[(int)(p_p.x - p_d.x * data->move) + (int)(p_p.y) * data->map.row] ?
-				player->pos.x -= p_d.x * data->move: 0;
-			!map->map[(int)(p_p.x) - (int)(p_p.y+ p_d.y * data->move) * data->map.row ] ?
-				player->pos.y -= p_d.y * data->move : 0;
-		}
+			data->player.move = -1;
 		else if (data->event.key.keysym.sym == SDLK_RIGHT)
-		{
-			t_point	old_dir = {p_d.x, p_d.y};
-			player->dir.x = p_d.x * cos(-data->rot) - p_d.y * sin(-data->rot);
-			player->dir.y = old_dir.x * sin(-data->rot) + p_d.y * cos(-data->rot);
-			t_point	old_pl = {pl->x, pl->y};
-			pl->x = pl->x * cos(-data->rot) - pl->y * sin(-data->rot);
-			pl->y = old_pl.x * sin(-data->rot) + pl->y * cos(-data->rot);
-		}
+			data->player.rot = 1;
 		else if (data->event.key.keysym.sym == SDLK_LEFT)
-		{
-			t_point	old_dir = {p_d.x, p_d.y};
-			player->dir.x = p_d.x * cos(data->rot) - p_d.y * sin(data->rot);
-			player->dir.y = old_dir.x * sin(data->rot) + p_d.y * cos(data->rot);
-			t_point	old_pl = {pl->x, pl->y};
-			pl->x = pl->x * cos(data->rot) - pl->y * sin(data->rot);
-			pl->y = old_pl.x * sin(data->rot) + pl->y * cos(data->rot);
-		}
+			data->player.rot = -1;
 		else if (data->event.key.keysym.sym == SDLK_ESCAPE)
-		{
-			SDL_DestroyWindow(data->win);
-			SDL_Quit();
-			return (0);
-		}			
+			return (close_sdl(data));
+	}
+	else if (data->event.type == SDL_KEYUP)
+	{
+		if (data->event.key.keysym.sym == SDLK_UP ||
+			data->event.key.keysym.sym == SDLK_DOWN)
+			data->player.move = 0;
+		if (data->event.key.keysym.sym == SDLK_RIGHT ||
+			data->event.key.keysym.sym == SDLK_LEFT)
+			data->player.rot = 0;
 	}
 	return (1);
 }

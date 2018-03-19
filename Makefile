@@ -6,7 +6,7 @@
 #    By: sergee <sergee@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 11:17:10 by skushnir          #+#    #+#              #
-#    Updated: 2018/03/15 13:27:32 by sergee           ###   ########.fr        #
+#    Updated: 2018/03/19 13:45:04 by sergee           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,10 +26,11 @@ OBJ			= $(SRC:.c=.o)
 
 INCLUDES	= -F./framework
 INCLUDES	+= $(addprefix -I, ./libft/printf ./framework/SDL2.framework/Headers	\
-							./framework/SDL2_ttf.framework/Headers)
+							./framework/SDL2_ttf.framework/Headers					\
+							./framework/SDL2_image.framework/Headers)
 
 FRAMEWORKS	=	-rpath ./framework -framework OpenGl -framework AppKit -framework opencl	\
-				-framework SDL2 -framework SDL2_ttf
+				-framework SDL2 -framework SDL2_ttf -framework SDL2_image
 
 
 all: lib $(NAME)

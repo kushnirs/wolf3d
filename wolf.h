@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/15 15:11:53 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/19 14:04:04 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <OpenCL/opencl.h>
 # include "SDL.h"
 # include "SDL_ttf.h"
+# include "SDL_image.h"
 # include "ft_printf.h"
 
 #include <stdio.h>
@@ -36,6 +37,7 @@ typedef	struct			s_host
 	cl_command_queue	com_queue;
 	cl_mem				memobj;
 	cl_mem				map;
+	cl_mem				wall;
 	cl_program			program;
 	cl_kernel			kernel;
 	cl_platform_id		p_id;
@@ -54,6 +56,10 @@ typedef struct			s_player
 {
 	t_point				pos;
 	t_point				dir;
+	int					move;
+	int					rot;
+	float				m_s;
+	float				r_s;
 }						t_player;
 
 typedef struct			s_map
@@ -68,20 +74,22 @@ typedef struct			s_sdl
 	SDL_Window			*win;
 	SDL_Surface			*surface;
 	SDL_Surface			*fps;
+	SDL_Surface			*w[5];
 	SDL_Event			event;
 	t_host				host;
+	int					*wall[5];
 	t_player			player;
 	t_map				map;
 	t_point				plane;
-	float				move;
-	float				rot;
 }						t_sdl;
 
 int					raycast(t_sdl *data, int *worldmap, t_player player, t_point plane);
 void				read_coordinate(int fd, char *av, t_map *map);
 void				fps(t_sdl *data);
-int					ft_handler(t_sdl *data, t_map *map, t_player *player, t_point *plane);
+void 				move(t_map *map, t_player *p, t_point *pl);
+int					ft_handler(t_sdl *data);
 int					host_fract(t_sdl *data);
+void				vsync();
 void				kernel_param(t_sdl *data);
 
 #endif

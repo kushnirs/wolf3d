@@ -6,7 +6,7 @@
 /*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 10:14:49 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/15 14:33:43 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/19 14:06:42 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@ void		kernel_param(t_sdl *data)
 	(void *)&data->host.memobj)) ? exit(ft_printf("Can't set parameter\n")) : 0;
 	(ret = clSetKernelArg(data->host.kernel, 1, sizeof(cl_mem),
 	(void *)&data->host.map)) ? exit(ft_printf("Can't set parameter\n")) : 0;
-	(ret = clSetKernelArg(data->host.kernel, 2, sizeof(t_point),
-	(void *)&data->player.pos)) ? exit(ft_printf("Can't set parameter\n")) : 0;
+	(ret = clSetKernelArg(data->host.kernel, 2, sizeof(cl_mem),
+	(void *)&data->host.wall)) ? exit(ft_printf("Can't set parameter\n")) : 0;
 	(ret = clSetKernelArg(data->host.kernel, 3, sizeof(t_point),
-	(void *)&data->player.dir)) ? exit(ft_printf("Can't set parameter\n")) : 0;
+	(void *)&data->player.pos)) ? exit(ft_printf("Can't set parameter\n")) : 0;
 	(ret = clSetKernelArg(data->host.kernel, 4, sizeof(t_point),
+	(void *)&data->player.dir)) ? exit(ft_printf("Can't set parameter\n")) : 0;
+	(ret = clSetKernelArg(data->host.kernel, 5, sizeof(t_point),
 	(void *)&data->plane)) ? exit(ft_printf("Can't set parameter\n")) : 0;
 	ret = clEnqueueNDRangeKernel(data->host.com_queue, data->host.kernel,
 		1, NULL, (size_t[3]){data->surface->w, 0, 0}, NULL, 0, NULL, NULL);
@@ -50,6 +52,8 @@ static void	host_program(char *str, int size, t_sdl *data)
 	ret ? exit(ft_printf("clCreateBuffer Failed\n")) : 0;
 	data->host.map = clCreateBuffer(data->host.context, CL_MEM_USE_HOST_PTR,
 		data->map.row * data->map.col * sizeof(int), data->map.map, &ret);
+	data->host.wall = clCreateBuffer(data->host.context, CL_MEM_USE_HOST_PTR,
+		64 * 64 * 5 * sizeof(int), data->wall, &ret);
 	ret ? exit(ft_printf("clCreateMap Failed\n")) : 0;
 	data->host.program = clCreateProgramWithSource(data->host.context, 1,
 		(const char **)&str, (const size_t *)&size, &ret);
