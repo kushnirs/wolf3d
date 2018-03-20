@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/20 00:12:38 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/20 14:32:20 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,11 @@
 # include "SDL_image.h"
 # include "ft_printf.h"
 
-#include <stdio.h>
+# include <stdio.h>
 
 # define DEVICE_TYPE CL_DEVICE_TYPE_CPU
-# define B_SIZE	10000
-# define MAP_W 24
-# define MAP_H 24
 # define WIDTH 1280
 # define HIGH 1024
-# define T_W 512
-# define T_H 512
 
 typedef	struct			s_host
 {
@@ -73,7 +68,9 @@ typedef struct			s_map
 
 typedef struct			s_wall
 {
-	t_ui				w[T_W * T_H];
+	int					w;
+	int					h;
+	t_ui				wall[512 * 512];
 }						t_wall;
 
 typedef struct			s_sdl
@@ -83,6 +80,7 @@ typedef struct			s_sdl
 	SDL_Surface			*fps;
 	SDL_Surface			*w[7];
 	SDL_Event			event;
+	TTF_Font			*ttf;
 	t_host				host;
 	t_wall				*wall;
 	t_player			player;
@@ -90,10 +88,11 @@ typedef struct			s_sdl
 	t_point				plane;
 }						t_sdl;
 
-int					raycast(t_sdl *data, int *worldmap, t_player player, t_point plane);
+int					raycast(t_sdl *data, int *worldmap, t_player player,
+							t_point plane);
 void				read_coordinate(int fd, char *av, t_map *map);
 void				fps(t_sdl *data);
-void 				move(t_map *map, t_player *p, t_point *pl);
+void				move(t_map *map, t_player *p, t_point *pl);
 int					ft_handler(t_sdl *data);
 int					host_fract(t_sdl *data);
 void				vsync();

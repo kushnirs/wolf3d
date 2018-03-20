@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/19 17:30:47 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/20 13:59:40 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,13 @@
 static int	close_sdl(t_sdl *data)
 {
 	SDL_DestroyWindow(data->win);
+	TTF_Quit();
+	IMG_Quit();
 	SDL_Quit();
 	return (0);
 }
 
-void	vsync(void)
+void		vsync(void)
 {
 	static t_ui	prev;
 	static t_ui	fps;
@@ -30,13 +32,12 @@ void	vsync(void)
 		SDL_Delay(16 - fps);
 }
 
-void	fps(t_sdl *data)
+void		fps(t_sdl *data)
 {
 	static t_ui	prev;
 	static t_ui	fps;
 	static t_ui	t_p;
 	t_ui		t;
-	TTF_Font	*ttf;
 	char		*fps_str;
 
 	t = time(NULL);
@@ -46,27 +47,27 @@ void	fps(t_sdl *data)
 	prev = SDL_GetTicks();
 	fps_str = ft_itoa(1000 / fps);
 	data->fps = NULL;
-	ttf = TTF_OpenFont("ARIAL.TTF", 22);
-	data->fps = TTF_RenderText_Solid(ttf, fps_str,
+	data->ttf = TTF_OpenFont("ARIAL.TTF", 22);
+	data->fps = TTF_RenderText_Solid(data->ttf, fps_str,
 		(SDL_Color){255, 255, 255, 255});
 	SDL_BlitSurface(data->fps, NULL, data->surface, NULL);
-	TTF_CloseFont(ttf);
+	TTF_CloseFont(data->ttf);
 	SDL_FreeSurface(data->fps);
 	ft_memdel((void**)&fps_str);
 }
 
-void move(t_map *map, t_player *p, t_point *pl)
+void		move(t_map *map, t_player *p, t_point *pl)
 {
 	const t_point	old_pl = {pl->x, pl->y};
 	const t_point	old_dir = {p->dir.x, p->dir.y};
 
 	if (p->move)
 	{
-		!map->map[(int)(p->pos.x + p->dir.x * p->m_s * p->move) + 
-			(int)p->pos.y * map->row] ? p->pos.x +=
+		!map->map[(int)(p->pos.x + p->dir.x * p->m_s * p->move) +
+			(int)p->pos.y * map->col] ? p->pos.x +=
 				p->dir.x * p->m_s * p->move : 0;
 		!map->map[(int)p->pos.x + (int)(p->pos.y + p->dir.y * p->m_s * p->move)
-			* map->row] ? p->pos.y +=
+			* map->col] ? p->pos.y +=
 				p->dir.y * p->m_s * p->move : 0;
 	}
 	if (p->rot)
@@ -80,7 +81,7 @@ void move(t_map *map, t_player *p, t_point *pl)
 	}
 }
 
-int	ft_handler(t_sdl *data)
+int			ft_handler(t_sdl *data)
 {
 	if (data->event.type == SDL_KEYDOWN)
 	{
@@ -104,5 +105,7 @@ int	ft_handler(t_sdl *data)
 			data->event.key.keysym.sym == SDLK_LEFT)
 			data->player.rot = 0;
 	}
+	else if (data->event.type == SDL_QUIT)
+		return (close_sdl(data));
 	return (1);
 }

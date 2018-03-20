@@ -12,21 +12,9 @@
 
 #include "wolf_cl.h"
 
-static int	parse_color(int c2, float t)
-{
-	int dr;
-	int dg;
-	int db;
-
-	dr = t * (float)(c2 / 0x10000 % 256);
-	dg = t * (float)(c2 / 0x100 % 256);
-	db = t * (float)(c2 % 256);
-	return (dr * 0x10000 + dg * 0x100 + db);
-}
-
 __kernel
 void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *tex,
-			t_point pos, t_point dir, t_point plane)
+			t_point pos, t_point dir, t_point plane, t_point map_size)
 {
 	int		x = get_global_id(0);
 	int		step[2];
@@ -81,11 +69,11 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 			map_y += step[1];
 			side = 1;
 		}
-		worldmap[map_x + map_y * 24] > 0 ? hit = 1 : 0;
+		worldmap[map_x + map_y * (int)map_size.x] > 0 ? hit = 1 : 0;
 	}
 	float perpWallDist = !side ? (map_x - pos.x + (1.0f - step[0]) / 2.0f) / ray.x :
 							(map_y - pos.y + (1.0f - step[1]) / 2.0f) / ray.y;
-	// HIGH WALL
+	// WALL
 	int	line_h;
 	line_h = HIGH / perpWallDist;
 	int	start;
@@ -94,19 +82,19 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 	start < 0 ? start = 0 : 0;
 	end = line_h / 2 + HIGH / 2;
 	end >= HIGH ? end = HIGH - 1 : 0;
-	int t_n = worldmap[map_x + map_y * 24] - 1;
+	int t_n = worldmap[map_x + map_y * (int)map_size.x] - 1;
 	float w_x;
 	w_x = !side ? pos.y + perpWallDist * ray.y : pos.x + perpWallDist * ray.x;
 	w_x -= floor(w_x);
-	int tex_x = int(w_x * float(T_W));
-	!side && ray.x > 0 ? tex_x = T_W - tex_x - 1 : 0;
-	side && ray.y < 0 ? tex_x = T_W - tex_x - 1 : 0;
+	int tex_x = int(w_x * float(tex[t_n].w));
+	!side && ray.x > 0 ? tex_x = tex[t_n].w - tex_x - 1 : 0;
+	side && ray.y < 0 ? tex_x = tex[t_n].w - tex_x - 1 : 0;
 	int i = start;
 	while (++i < end)
 	{
 		int d = i * 256 - HIGH * 128 + line_h * 128;
-		int tex_y = d * T_H / line_h / 256;
-		int color = tex[t_n].w[T_H * tex_y + tex_x];
+		int tex_y = d * tex[t_n].h / line_h / 256;
+		int color = tex[t_n].wall[tex[t_n].h * tex_y + tex_x];
 		buff[x + i * WIDTH] = color;
 	}
 	// FLOOR
@@ -132,9 +120,9 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 		c_f.y = weight * floor.y + (1.0f - weight) * pos.y;
 		int	f_tex_x;
 		int	f_tex_y;
-		f_tex_x = (int)(c_f.x * T_W) % T_W; 
-		f_tex_y = (int)(c_f.y * T_H) % T_H;
-		buff[x + i * WIDTH] = tex[5].w[T_H * f_tex_y + f_tex_x];
-		buff[x + (HIGH - i) * WIDTH] = tex[6].w[T_H * f_tex_y + f_tex_x];
+		f_tex_x = (int)(c_f.x * tex[t_n].w) % tex[t_n].w; 
+		f_tex_y = (int)(c_f.y * tex[t_n].h) % tex[t_n].h;
+		buff[x + i * WIDTH] = tex[5].wall[tex[t_n].h * f_tex_y + f_tex_x];
+		buff[x + (HIGH - i) * WIDTH] = tex[6].wall[tex[t_n].h * f_tex_y + f_tex_x];
 	}
 }

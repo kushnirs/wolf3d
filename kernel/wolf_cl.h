@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   wolf_cl.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/19 16:55:28 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/20 13:13:00 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 
 # define WIDTH 1280
 # define HIGH 1024
-# define T_W 512
-# define T_H 512
 
 typedef struct			s_point
 {
@@ -26,9 +24,9 @@ typedef struct			s_point
 
 typedef struct			s_wall
 {
-	unsigned int		w[T_W * T_H];
+	int					w;
+	int					h;
+	unsigned int		wall[512 * 512];
 }						t_wall;
 
-// void					raycast(__global int *buff, __constant int *worldmap,
-// 								t_player player, t_point plane);
 #endif
