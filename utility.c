@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/21 20:37:00 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/22 00:31:02 by sergee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,17 +47,16 @@ void		fps(t_sdl *data)
 
 void		move(t_map *map, t_player *p)
 {
+	float	w;
 	float	x;
 	float	y;
 
-	x = p->pos.x + p->dir.x * p->m_s * p->move + (int)p->pos.y * map->col;
-	!map->map[(int)x] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
-	y = p->pos.x + (int)(p->pos.y + p->dir.y * p->m_s * p->move)* map->col;
-	!map->map[(int)y] ? p->pos.y +=	p->dir.y * p->m_s * p->move : 0;
-	printf("pos.x%f \n", p->pos.x);
-	printf("pos.y%f \n", p->pos.y);
-	printf("x%f \n", x);
-	printf("y%f \n", y);
+	w = p->dir.x > 0 ? 0.2 : -0.2;
+	x = p->pos.x + p->dir.x * p->m_s * p->move + w + (int)p->pos.y * map->col;
+	!map->map[(int)(x)] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
+	w = p->dir.y > 0 ? 0.2 : -0.2;
+	y = p->pos.x + (int)(p->pos.y + w + p->dir.y * p->m_s * p->move)* map->col;
+	!map->map[(int)(y)] ? p->pos.y +=	p->dir.y * p->m_s * p->move : 0;
 }
 
 void		rotate(t_player *p, t_point *pl)
@@ -65,8 +64,6 @@ void		rotate(t_player *p, t_point *pl)
 	const t_point	old_pl = {pl->x, pl->y};
 	const t_point	old_dir = {p->dir.x, p->dir.y};
 
-	// printf("dir.x%f\n", p->dir.x);
-	// printf("dir.y%f\n", p->dir.y);
 	p->dir.x = p->dir.x * cos(p->r_s * p->rot) -
 			p->dir.y * sin(p->r_s * p->rot);
 	p->dir.y = old_dir.x * sin(p->r_s * p->rot) +
