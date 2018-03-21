@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/20 13:59:40 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/21 20:37:00 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,6 @@ static int	close_sdl(t_sdl *data)
 	IMG_Quit();
 	SDL_Quit();
 	return (0);
-}
-
-void		vsync(void)
-{
-	static t_ui	prev;
-	static t_ui	fps;
-
-	fps = SDL_GetTicks() - prev;
-	prev = SDL_GetTicks();
-	if (16 > fps)
-		SDL_Delay(16 - fps);
 }
 
 void		fps(t_sdl *data)
@@ -56,29 +45,34 @@ void		fps(t_sdl *data)
 	ft_memdel((void**)&fps_str);
 }
 
-void		move(t_map *map, t_player *p, t_point *pl)
+void		move(t_map *map, t_player *p)
+{
+	float	x;
+	float	y;
+
+	x = p->pos.x + p->dir.x * p->m_s * p->move + (int)p->pos.y * map->col;
+	!map->map[(int)x] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
+	y = p->pos.x + (int)(p->pos.y + p->dir.y * p->m_s * p->move)* map->col;
+	!map->map[(int)y] ? p->pos.y +=	p->dir.y * p->m_s * p->move : 0;
+	printf("pos.x%f \n", p->pos.x);
+	printf("pos.y%f \n", p->pos.y);
+	printf("x%f \n", x);
+	printf("y%f \n", y);
+}
+
+void		rotate(t_player *p, t_point *pl)
 {
 	const t_point	old_pl = {pl->x, pl->y};
 	const t_point	old_dir = {p->dir.x, p->dir.y};
 
-	if (p->move)
-	{
-		!map->map[(int)(p->pos.x + p->dir.x * p->m_s * p->move) +
-			(int)p->pos.y * map->col] ? p->pos.x +=
-				p->dir.x * p->m_s * p->move : 0;
-		!map->map[(int)p->pos.x + (int)(p->pos.y + p->dir.y * p->m_s * p->move)
-			* map->col] ? p->pos.y +=
-				p->dir.y * p->m_s * p->move : 0;
-	}
-	if (p->rot)
-	{
-		p->dir.x = p->dir.x * cos(p->r_s * p->rot) -
-				p->dir.y * sin(p->r_s * p->rot);
-		p->dir.y = old_dir.x * sin(p->r_s * p->rot) +
-				p->dir.y * cos(p->r_s * p->rot);
-		pl->x = pl->x * cos(p->r_s * p->rot) - pl->y * sin(p->r_s * p->rot);
-		pl->y = old_pl.x * sin(p->r_s * p->rot) + pl->y * cos(p->r_s * p->rot);
-	}
+	// printf("dir.x%f\n", p->dir.x);
+	// printf("dir.y%f\n", p->dir.y);
+	p->dir.x = p->dir.x * cos(p->r_s * p->rot) -
+			p->dir.y * sin(p->r_s * p->rot);
+	p->dir.y = old_dir.x * sin(p->r_s * p->rot) +
+			p->dir.y * cos(p->r_s * p->rot);
+	pl->x = pl->x * cos(p->r_s * p->rot) - pl->y * sin(p->r_s * p->rot);
+	pl->y = old_pl.x * sin(p->r_s * p->rot) + pl->y * cos(p->r_s * p->rot);
 }
 
 int			ft_handler(t_sdl *data)

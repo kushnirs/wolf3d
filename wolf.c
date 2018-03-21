@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 09:09:57 by skushnir          #+#    #+#             */
-/*   Updated: 2018/03/20 14:45:40 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/21 18:26:18 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,13 @@ static void	init_data(t_sdl *data, int ac, char **av)
 {
 	int		fd;
 
-	data = &((t_sdl){.player = {{1, 1}, {-1, 0}, 0, 0, 0.09, 0.03},
+	data = &((t_sdl){.player = {{0, 0}, {-1, 0}, 0, 0, 0.09, 0.03},
 			.plane = {0, -0.66}, .map = {.row = 0, .col = 0}});
 	ac != 2 ?
 		exit(write(1, "Usage : ./wolf3d <filename>\n", 28)) : 0;
 	if ((fd = open(av[1], O_RDONLY)) == -1)
 		exit(ft_printf("No file %s\n", av[1]));
-	read_coordinate(fd, av[1], &data->map);
+	read_coordinate(data, fd, av[1], &data->map);
 	download_tex(data);
 }
 
@@ -79,10 +79,10 @@ int			main(int ac, char **av)
 		fps(&data);
 		while (SDL_PollEvent(&data.event))
 			!ft_handler(&data) ? exit(0) : 0;
-		data.player.move || data.player.rot ?
-			move(&data.map, &data.player, &data.plane) : 0;
+		data.player.move ? move(&data.map, &data.player) : 0;
+		data.player.rot ? rotate(&data.player, &data.plane) : 0;
 		SDL_UpdateWindowSurface(data.win);
-		vsync();
+		SDL_GL_SetSwapInterval(1);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/20 14:32:20 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/21 18:28:57 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 # include <stdio.h>
 
 # define DEVICE_TYPE CL_DEVICE_TYPE_CPU
-# define WIDTH 1280
-# define HIGH 1024
+# define WIDTH 1600
+# define HIGH 1200
 
 typedef	struct			s_host
 {
@@ -88,14 +88,15 @@ typedef struct			s_sdl
 	t_point				plane;
 }						t_sdl;
 
-int					raycast(t_sdl *data, int *worldmap, t_player player,
+int						raycast(t_sdl *data, int *worldmap, t_player player,
 							t_point plane);
-void				read_coordinate(int fd, char *av, t_map *map);
-void				fps(t_sdl *data);
-void				move(t_map *map, t_player *p, t_point *pl);
-int					ft_handler(t_sdl *data);
-int					host_fract(t_sdl *data);
-void				vsync();
-void				kernel_param(t_sdl *data);
+void					read_coordinate(t_sdl *data, int fd, char *av,
+							t_map *map);
+void					fps(t_sdl *data);
+void					move(t_map *map, t_player *p);
+void					rotate(t_player *p, t_point *pl);
+int						ft_handler(t_sdl *data);
+int						host_fract(t_sdl *data);
+void					kernel_param(t_sdl *data);
 
 #endif

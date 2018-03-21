@@ -6,15 +6,15 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/20 13:13:00 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/21 18:25:34 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WOLF_CL_H
 # define WOLF_CL_H
 
-# define WIDTH 1280
-# define HIGH 1024
+# define WIDTH 1600
+# define HIGH 1200
 
 typedef struct			s_point
 {
