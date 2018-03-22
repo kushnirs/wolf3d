@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utility.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sergee <sergee@student.42.fr>              +#+  +:+       +#+        */
+/*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/22 00:31:02 by sergee           ###   ########.fr       */
+/*   Updated: 2018/03/22 18:42:34 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,15 +48,16 @@ void		fps(t_sdl *data)
 void		move(t_map *map, t_player *p)
 {
 	float	w;
-	float	x;
-	float	y;
+	int		x;
+	int		y;
 
-	w = p->dir.x > 0 ? 0.2 : -0.2;
-	x = p->pos.x + p->dir.x * p->m_s * p->move + w + (int)p->pos.y * map->col;
-	!map->map[(int)(x)] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
-	w = p->dir.y > 0 ? 0.2 : -0.2;
-	y = p->pos.x + (int)(p->pos.y + w + p->dir.y * p->m_s * p->move)* map->col;
-	!map->map[(int)(y)] ? p->pos.y +=	p->dir.y * p->m_s * p->move : 0;
+	w = p->m_s * p->move > 0.0f ? 0.35f : -0.35f;
+	x = (int)(p->pos.x + p->dir.x * (p->m_s * p->move + w)) +
+		((int)p->pos.y - (int)(p->dir.y * w)) * map->col;
+	!map->map[x] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
+	y = (int)p->pos.x - (int)(p->dir.x * w) +
+	(int)(p->pos.y + p->dir.y * (p->m_s * p->move + w)) * map->col;
+	!map->map[y] ? p->pos.y += p->dir.y * p->m_s * p->move : 0;
 }
 
 void		rotate(t_player *p, t_point *pl)

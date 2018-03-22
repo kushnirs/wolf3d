@@ -6,7 +6,7 @@
 #    By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 11:17:10 by skushnir          #+#    #+#              #
-#    Updated: 2018/03/21 17:46:29 by skushnir         ###   ########.fr        #
+#    Updated: 2018/03/22 19:06:14 by skushnir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME		= wolf3d
 
 CC			= gcc
 
-CFLAGS		= -Wall -Wextra -Werror -O3
+CFLAGS		= -Wall -Wextra -Werror
 
 SRC			= wolf.c parse.c host.c utility.c
 

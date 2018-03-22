@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 15:13:38 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/21 18:37:30 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/22 19:43:31 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,13 @@ static void	parse_coordinate(t_sdl *data, int c, char **coord, t_map *map)
 	x = -1;
 	while (coord[++x])
 	{
-		if (!y)
-		{
-			c != 2 ? exit(ft_printf("Wrong player position\n")) : 0;
-			!x ? data->player.pos.x = ft_atoi(coord[x]) + 0.5 : 0;
-			x == 1 ? data->player.pos.y = ft_atoi(coord[x]) + 0.5 : 0;
-		}
-		else
-		{
-			(int)ft_strlen(coord[x]) != ft_strpcmp("012345678", coord[x]) ?
-				exit(ft_printf("Wrong symbol \n")) : 0;
-			(map->map[x + (y - 1) * map->col] = ft_atoi(coord[x])) < 0 ?
-				exit(ft_printf("Negative number'n")) : 0;
-		}
+		!y && c != 2 ? exit(ft_printf("Wrong player position\n")) : 0;
+		!y && !x ? data->player.pos.x = ft_atoi(coord[x]) + 0.5 : 0;
+		!y && x == 1 ? data->player.pos.y = ft_atoi(coord[x]) + 0.5 : 0;
+		y && (int)ft_strlen(coord[x]) != ft_strpcmp("0123456", coord[x]) ?
+			exit(ft_printf("Wrong symbol \n")) : 0;
+		y && (map->map[x + (y - 1) * map->col] = ft_atoi(coord[x])) < 0 ?
+			exit(ft_printf("Negative number'n")) : 0;
 		ft_memdel((void **)&coord[x]);
 	}
 	ft_memdel((void **)&coord);

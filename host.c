@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/23 10:14:49 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/20 13:55:59 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/22 19:42:24 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ void		kernel_param(t_sdl *data)
 
 static void	host_program(char *str, int size, t_sdl *data)
 {
-	cl_int	ret;
+	cl_int			ret;
+	const size_t	s = (size_t)size;
 
 	data->host.com_queue = clCreateCommandQueue(data->host.context,
 		data->host.dev_id, 0, &ret);
@@ -59,7 +60,7 @@ static void	host_program(char *str, int size, t_sdl *data)
 		7 * sizeof(t_wall), data->wall, &ret);
 	ret ? exit(ft_printf("clCreateMap Failed\n")) : 0;
 	data->host.program = clCreateProgramWithSource(data->host.context, 1,
-		(const char **)&str, (const size_t *)&size, &ret);
+		(const char **)&str, (const size_t *)&s, &ret);
 	ret ? exit(ft_printf("clCreateProgramWithSource Failed %d\n", ret)) : 0;
 	(ret = clBuildProgram(data->host.program, 1, &data->host.dev_id,
 	"-I ./kernel", NULL, NULL)) ? ft_printf("%dBuildProgram Failed\n", ret) : 0;
@@ -76,7 +77,7 @@ int			host_fract(t_sdl *data)
 
 	(fp = open("./kernel/wolf.cl", O_RDONLY)) <= 0 ?
 		exit(ft_printf("Failed to load kernel.\n")) : 0;
-	!(str = (char*)malloc(MAX_SOURCE_SIZE)) ?
+	!(str = malloc(MAX_SOURCE_SIZE)) ?
 		exit(ft_printf("Can't allocate memory\n")) : 0;
 	(size = read(fp, str, MAX_SOURCE_SIZE)) <= 0 ?
 		exit(ft_printf("Can't read file\n")) : 0;
