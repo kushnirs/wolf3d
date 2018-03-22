@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/21 18:28:57 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/22 20:20:09 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 # include "SDL_ttf.h"
 # include "SDL_image.h"
 # include "ft_printf.h"
-
-# include <stdio.h>
 
 # define DEVICE_TYPE CL_DEVICE_TYPE_CPU
 # define WIDTH 1600
