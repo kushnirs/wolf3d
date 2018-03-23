@@ -71,11 +71,11 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 		}
 		worldmap[map_x + map_y * (int)map_size.x] > 0 ? hit = 1 : 0;
 	}
-	float perpWallDist = !side ? (map_x - pos.x + (1.0f - step[0]) / 2.0f) / ray.x :
+	float wall_d = !side ? (map_x - pos.x + (1.0f - step[0]) / 2.0f) / ray.x :
 							(map_y - pos.y + (1.0f - step[1]) / 2.0f) / ray.y;
 	// WALL
 	int	line_h;
-	line_h = HIGH / perpWallDist;
+	line_h = HIGH / wall_d;
 	int	start;
 	int	end;
 	start = -line_h / 2 + HIGH / 2;
@@ -92,12 +92,15 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 	t[2] = int(texture);
 	texture = (texture - t[2]) * 10.0f;
 	t[3] = round(texture);
+	int why = -1;
+	while (++why < 4)
+		t[why] > 6 || t[why] < 0 ? t[why] = 1 : 0;
 	!side && ray.x < 0 ? t_n = t[3] : 0;
 	!side && ray.x > 0 ? t_n = t[0] : 0;
 	side && ray.y > 0 ? t_n = t[2] : 0;
 	side && ray.y < 0 ? t_n = t[1] : 0;
 	float w_x;
-	w_x = !side ? pos.y + perpWallDist * ray.y : pos.x + perpWallDist * ray.x;
+	w_x = !side ? pos.y + wall_d * ray.y : pos.x + wall_d * ray.x;
 	w_x -= floor(w_x);
 	int tex_x = int(w_x * float(tex[t_n].w));
 	!side && ray.x > 0 ? tex_x = tex[t_n].w - tex_x - 1 : 0;
@@ -127,7 +130,7 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 	while (++i < HIGH)
 	{
 		float c_d = HIGH / (2.0f * i - HIGH);
-		float weight = c_d / perpWallDist;
+		float weight = c_d / wall_d;
 		t_point c_f;
 		c_f.x = weight * floor.x + (1.0f - weight) * pos.x;
 		c_f.y = weight * floor.y + (1.0f - weight) * pos.y;

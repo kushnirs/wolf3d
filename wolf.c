@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 09:09:57 by skushnir          #+#    #+#             */
-/*   Updated: 2018/03/22 20:15:46 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/03/22 20:28:39 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ static void	init_data(t_sdl *data, int ac, char **av)
 {
 	int		fd;
 
-	*data = (t_sdl){.player = {{0, 0}, {-1, 0}, 0, 0, 0.09, 0.05},
+	*data = (t_sdl){.player = {{0, 0}, {-1, 0}, 0, 0, 0.06, 0.04},
 			.plane = {0, -0.66}, .map = {.row = 0, .col = 0}};
 	ac != 2 ?
 		exit(write(1, "Usage : ./wolf3d <filename>\n", 28)) : 0;
