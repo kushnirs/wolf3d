@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 15:13:38 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/22 19:43:31 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/04/24 13:09:22 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ static void	parse_coordinate(t_sdl *data, int c, char **coord, t_map *map)
 		y && (int)ft_strlen(coord[x]) != ft_strpcmp("0123456", coord[x]) ?
 			exit(ft_printf("Wrong symbol \n")) : 0;
 		y && (map->map[x + (y - 1) * map->col] = ft_atoi(coord[x])) < 0 ?
-			exit(ft_printf("Negative number'n")) : 0;
+			exit(ft_printf("Negative number \n")) : 0;
 		ft_memdel((void **)&coord[x]);
 	}
 	ft_memdel((void **)&coord);

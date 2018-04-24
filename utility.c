@@ -6,22 +6,13 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/05 21:58:17 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/23 10:55:56 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/04/24 16:08:14 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf.h"
 
-static int	close_sdl(t_sdl *data)
-{
-	SDL_DestroyWindow(data->win);
-	TTF_Quit();
-	IMG_Quit();
-	SDL_Quit();
-	return (0);
-}
-
-void		fps(t_sdl *data)
+void	fps(t_sdl *data)
 {
 	static t_ui	prev;
 	static t_ui	fps;
@@ -45,59 +36,56 @@ void		fps(t_sdl *data)
 	ft_memdel((void**)&fps_str);
 }
 
-void		move(t_map *map, t_player *p)
+void	toolbar(t_sdl *data)
 {
-	float	w;
-	float	x;
-	float	y;
+	SDL_Rect dest;
 
-	w = p->m_s * p->move > 0.0f ? 0.333f : -0.333f;
-	x = (int)(p->pos.x + p->dir.x * (p->m_s * p->move + w)) +
-		((int)p->pos.y - (int)(p->dir.y * w)) * map->col;
-	!map->map[(int)x] ? p->pos.x += p->dir.x * p->m_s * p->move : 0;
-	y = (int)p->pos.x - (int)(p->dir.x * w) +
-	(int)(p->pos.y + p->dir.y * (p->m_s * p->move + w)) * map->col;
-	!map->map[(int)y] ? p->pos.y += p->dir.y * p->m_s * p->move : 0;
+	if (!data->weapon && !data->bar && !data->weapon_fire)
+	{
+		data->weapon = IMG_Load("picture/weapon.gif");
+		SDL_SetColorKey(data->weapon, SDL_TRUE,
+			SDL_MapRGB(data->weapon->format, 255, 255, 255));
+		data->weapon_fire = IMG_Load("picture/weapon_fire.gif");
+		SDL_SetColorKey(data->weapon_fire, SDL_TRUE,
+			SDL_MapRGB(data->weapon_fire->format, 255, 255, 255));
+		data->bar = IMG_Load("picture/toolbar.jpg");
+		!data->weapon || !data->weapon_fire || !data->bar ?
+			exit(ft_printf("IMG toolbar error\n")) : 0;
+	}
+	dest.w = WIDTH;
+	dest.h = data->bar->h + 30;
+	dest.y = HIGH - data->bar->h - 30;
+	SDL_BlitScaled(data->bar, NULL, data->surface, &dest);
+	dest.x = WIDTH / 2;
+	dest.y = HIGH - data->weapon->h - data->bar->h - 30;
+	if (data->player.fire)
+		SDL_BlitSurface(data->weapon_fire, NULL, data->surface, &dest);
+	SDL_BlitSurface(data->weapon, NULL, data->surface, &dest);
 }
 
-void		rotate(t_player *p, t_point *pl)
+void	download_tex(t_sdl *data)
 {
-	const t_point	old_pl = {pl->x, pl->y};
-	const t_point	old_dir = {p->dir.x, p->dir.y};
+	int		i;
+	int		k;
+	t_ui	*img;
 
-	p->dir.x = p->dir.x * cos(p->r_s * p->rot) -
-			p->dir.y * sin(p->r_s * p->rot);
-	p->dir.y = old_dir.x * sin(p->r_s * p->rot) +
-			p->dir.y * cos(p->r_s * p->rot);
-	pl->x = pl->x * cos(p->r_s * p->rot) - pl->y * sin(p->r_s * p->rot);
-	pl->y = old_pl.x * sin(p->r_s * p->rot) + pl->y * cos(p->r_s * p->rot);
-}
-
-int			ft_handler(t_sdl *data)
-{
-	if (data->event.type == SDL_KEYDOWN)
+	data->w[0] = IMG_Load("picture/wall_5.jpg");
+	data->w[1] = IMG_Load("picture/wall_E.jpg");
+	data->w[2] = IMG_Load("picture/wall_3.jpg");
+	data->w[3] = IMG_Load("picture/wall_7.jpg");
+	data->w[4] = IMG_Load("picture/wall_1.jpg");
+	data->w[5] = IMG_Load("picture/side_5.jpg");
+	data->w[6] = IMG_Load("picture/side_F.jpg");
+	data->wall = (t_wall*)malloc(sizeof(t_wall) * 7);
+	i = -1;
+	while (++i < 7)
 	{
-		if (data->event.key.keysym.sym == SDLK_UP)
-			data->player.move = 1;
-		else if (data->event.key.keysym.sym == SDLK_DOWN)
-			data->player.move = -1;
-		else if (data->event.key.keysym.sym == SDLK_RIGHT)
-			data->player.rot = 1;
-		else if (data->event.key.keysym.sym == SDLK_LEFT)
-			data->player.rot = -1;
-		else if (data->event.key.keysym.sym == SDLK_ESCAPE)
-			return (close_sdl(data));
+		!data->w[i] ? exit(ft_printf("IMG %d error\n", i + 1)) : 0;
+		data->wall[i].w = data->w[i]->w;
+		data->wall[i].h = data->w[i]->h;
+		img = (t_ui*)data->w[i]->pixels;
+		k = -1;
+		while (++k < data->w[i]->w * data->w[i]->h)
+			data->wall[i].wall[k] = img[k];
 	}
-	else if (data->event.type == SDL_KEYUP)
-	{
-		if (data->event.key.keysym.sym == SDLK_UP ||
-			data->event.key.keysym.sym == SDLK_DOWN)
-			data->player.move = 0;
-		if (data->event.key.keysym.sym == SDLK_RIGHT ||
-			data->event.key.keysym.sym == SDLK_LEFT)
-			data->player.rot = 0;
-	}
-	else if (data->event.type == SDL_QUIT)
-		return (close_sdl(data));
-	return (1);
 }

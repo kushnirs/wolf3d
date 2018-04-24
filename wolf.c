@@ -6,38 +6,11 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/06 09:09:57 by skushnir          #+#    #+#             */
-/*   Updated: 2018/03/22 20:28:39 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/04/24 15:22:40 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf.h"
-
-static void	download_tex(t_sdl *data)
-{
-	int		i;
-	int		k;
-	t_ui	*img;
-
-	data->w[0] = IMG_Load("picture/wall_5.jpg");
-	data->w[1] = IMG_Load("picture/wall_E.jpg");
-	data->w[2] = IMG_Load("picture/wall_3.jpg");
-	data->w[3] = IMG_Load("picture/wall_7.jpg");
-	data->w[4] = IMG_Load("picture/wall_1.jpg");
-	data->w[5] = IMG_Load("picture/side_5.jpg");
-	data->w[6] = IMG_Load("picture/side_F.jpg");
-	data->wall = (t_wall*)malloc(sizeof(t_wall) * 7);
-	i = -1;
-	while (++i < 7)
-	{
-		!data->w[i] ? exit(ft_printf("IMG %d error\n", i + 1)) : 0;
-		data->wall[i].w = data->w[i]->w;
-		data->wall[i].h = data->w[i]->h;
-		img = (t_ui*)data->w[i]->pixels;
-		k = -1;
-		while (++k < data->w[i]->w * data->w[i]->h)
-			data->wall[i].wall[k] = img[k];
-	}
-}
 
 static void	init_sdl(t_sdl *data)
 {
@@ -56,8 +29,9 @@ static void	init_data(t_sdl *data, int ac, char **av)
 {
 	int		fd;
 
-	*data = (t_sdl){.player = {{0, 0}, {-1, 0}, 0, 0, 0.06, 0.04},
-			.plane = {0, -0.66}, .map = {.row = 0, .col = 0}};
+	*data = (t_sdl){.weapon = NULL, .weapon_fire = NULL, .bar = NULL,
+		.player = {{0, 0}, {-1, 0}, 0, 0, 0, 0.06, 0.04},
+		.plane = {0, -0.66}, .map = {.row = 0, .col = 0}};
 	ac != 2 ?
 		exit(write(1, "Usage : ./wolf3d <filename>\n", 28)) : 0;
 	if ((fd = open(av[1], O_RDONLY)) == -1)
@@ -77,6 +51,7 @@ int			main(int ac, char **av)
 	{
 		kernel_param(&data);
 		fps(&data);
+		toolbar(&data);
 		while (SDL_PollEvent(&data.event))
 			!ft_handler(&data) ? exit(0) : 0;
 		data.player.move ? move(&data.map, &data.player) : 0;

@@ -6,7 +6,7 @@
 #    By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/09 11:17:10 by skushnir          #+#    #+#              #
-#    Updated: 2018/03/22 19:06:14 by skushnir         ###   ########.fr        #
+#    Updated: 2018/04/24 15:56:32 by skushnir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC			= gcc
 
 CFLAGS		= -Wall -Wextra -Werror
 
-SRC			= wolf.c parse.c host.c utility.c
+SRC			= wolf.c parse.c host.c utility.c handler.c
 
 HDR			= wolf.h
 
@@ -41,7 +41,7 @@ $(NAME): $(OBJ) $(HDR) $(LIB)
 $(OBJ): %.o : %.c $(HDR)
 	@$(CC) $(CFLAGS) -c $< $(INCLUDES)
 
-lib: 
+lib:
 	make -C libft;
 clean:
 	@make -C libft clean;

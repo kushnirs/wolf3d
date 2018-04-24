@@ -6,7 +6,7 @@
 /*   By: skushnir <skushnir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/16 12:14:12 by sergee            #+#    #+#             */
-/*   Updated: 2018/03/23 10:55:04 by skushnir         ###   ########.fr       */
+/*   Updated: 2018/04/24 15:23:08 by skushnir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct			s_player
 	t_point				dir;
 	int					move;
 	int					rot;
+	int					fire;
 	float				m_s;
 	float				r_s;
 }						t_player;
@@ -76,6 +77,9 @@ typedef struct			s_sdl
 	SDL_Window			*win;
 	SDL_Surface			*surface;
 	SDL_Surface			*fps;
+	SDL_Surface			*weapon;
+	SDL_Surface			*weapon_fire;
+	SDL_Surface			*bar;
 	SDL_Surface			*w[7];
 	SDL_Event			event;
 	TTF_Font			*ttf;
@@ -90,6 +94,8 @@ int						raycast(t_sdl *data, int *worldmap, t_player player,
 							t_point plane);
 void					read_coordinate(t_sdl *data, int fd, char *av,
 							t_map *map);
+void					download_tex(t_sdl *data);
+void					toolbar(t_sdl *data);
 void					fps(t_sdl *data);
 void					move(t_map *map, t_player *p);
 void					rotate(t_player *p, t_point *pl);

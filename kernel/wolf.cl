@@ -94,7 +94,7 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 	t[3] = round(texture);
 	int why = -1;
 	while (++why < 4)
-		t[why] > 6 || t[why] < 0 ? t[why] = 1 : 0;
+		t[why] > 6 || t[why] < 0 ? t[why] = 0 : 0;
 	!side && ray.x < 0 ? t_n = t[3] : 0;
 	!side && ray.x > 0 ? t_n = t[0] : 0;
 	side && ray.y > 0 ? t_n = t[2] : 0;
@@ -136,7 +136,7 @@ void raycast(__global int *buff, __constant int *worldmap, __constant t_wall *te
 		c_f.y = weight * floor.y + (1.0f - weight) * pos.y;
 		int	f_tex_x;
 		int	f_tex_y;
-		f_tex_x = (int)(c_f.x * tex[t_n].w) % tex[t_n].w; 
+		f_tex_x = (int)(c_f.x * tex[t_n].w) % tex[t_n].w;
 		f_tex_y = (int)(c_f.y * tex[t_n].h) % tex[t_n].h;
 		buff[x + i * WIDTH] = tex[5].wall[tex[t_n].h * f_tex_y + f_tex_x];
 		buff[x + (HIGH - i) * WIDTH] = tex[6].wall[tex[t_n].h * f_tex_y + f_tex_x];
